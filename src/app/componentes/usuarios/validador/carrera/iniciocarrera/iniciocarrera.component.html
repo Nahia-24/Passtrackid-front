@@ -1,0 +1,83 @@
+<app-navbarp></app-navbarp>
+
+<div class="b-example-divider"></div>
+
+
+
+<div class="container">
+
+
+
+    <form class="p-4 p-md-5 border rounded-3 bg-light" action="">
+        <h1>Entrega de Kit </h1>
+
+        <h2>Validar Numero de identificacion del registrado </h2>
+
+        <div class="form-floating mb-3">
+            <input class="form-control" name="idadulto" id="idadulto" [(ngModel)]="idadulto" placeholder="idadulto"
+                required>
+            <label for="floatingPassword">Identificacion del beneficiario</label>
+        </div>
+
+
+        <button class="w-100 btn btn-lg btn-primary" (click)="validarcedula()" type="submit">Validar</button>
+        <hr class="my-4">
+        <small class="text-muted">Atentos a nuestras redes sociales.</small>
+
+    </form>
+
+
+</div>
+
+<div class="b-example-divider"></div>
+
+
+
+
+
+<div class="b-example-divider"></div>
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true"
+    (ngModel)="nuevoUsuario">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel"> validar regalo</h5>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+
+                <br />
+                <div class="card" *ngFor="let group of usuarioDto1">
+                    <div class="card-header">
+                        Datos del beneficiario
+                    </div>
+                    <div class="card-body">
+                        <p class="card-text">Cedula del beneficiario: {{group.variable1}}
+                        <p class="card-text">Nombre del beneficiario: {{group.variable3}}   {{group.variable4}}
+                        <p class="card-text">Talla de la camisa del beneficiario: {{group.variable11}}
+                        <p class="card-text">Carrera del beneficiario: {{group.variable2}}
+                            <div class="form-floating mb-3">
+                                <input class="form-control" name="numero" id="numero" [(ngModel)]="numero1" placeholder="numero"
+                                    required>
+                                <label for="floatingPassword">Diligenciar numero del participante</label>
+                            </div>
+
+
+                            <button type="button" class="btn btn-warning" (click)="validarnumero(group)">Registrar participante</button>
+
+                    </div>
+                    <br />
+
+                </div>
+
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<app-footerp></app-footerp>

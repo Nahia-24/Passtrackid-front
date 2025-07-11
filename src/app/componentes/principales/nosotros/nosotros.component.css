@@ -1,0 +1,130 @@
+/* ---- SECCIÓN HERO CON VIDEO ---- */
+.hero-nosotros {
+  position: relative;
+  width: 100%;
+  height: 400px;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+}
+
+/* Video de fondo */
+.video-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Capa oscura sobre el video */
+.hero-nosotros::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6); /* Oscurece el video */
+}
+
+/* Contenido del Hero */
+.hero-content {
+  position: relative;
+  z-index: 1;
+}
+
+.hero-content h1 {
+  font-size: 3rem;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+.hero-content p {
+  font-size: 1.2rem;
+}
+
+/* ---- SECCIÓN DE INFORMACIÓN ---- */
+.section-title {
+  font-size: 2.5rem;
+  margin: 40px 0 20px;
+  font-weight: bold;
+}
+
+/* ---- TARJETAS DE MISIÓN Y VISIÓN ---- */
+.info-section {
+  display: flex;
+  justify-content: center;
+  gap: 30px;
+  margin-top: 40px;
+  flex-wrap: wrap;
+}
+
+.info-card {
+  background: #ffffff;
+  padding: 25px;
+  border-radius: 15px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+  max-width: 350px;
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.info-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ---- ICONOS ---- */
+.info-icon {
+  font-size: 50px;
+  margin-bottom: 15px;
+}
+
+/* ---- SECCIÓN CTA ---- */
+.cta-nosotros {
+  background: linear-gradient(135deg, #ffcc00, #ff9900, #ffd700, #ffa500);
+  background-size: 300% 300%; /* Expande el fondo para un mejor desplazamiento */
+  color: white;
+  text-align: center;
+  padding: 50px 20px;
+  margin-top: 50px;
+  font-size: 1.5rem;
+  font-weight: bold;
+  animation: cambioGradiente 8s infinite alternate linear;
+}
+
+/* ---- ANIMACIÓN DEL GRADIENTE FLUIDO ---- */
+@keyframes cambioGradiente {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .info-section {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  .hero-nosotros {
+    height: 300px;
+  }
+
+  .hero-content h1 {
+    font-size: 2.5rem;
+  }
+}

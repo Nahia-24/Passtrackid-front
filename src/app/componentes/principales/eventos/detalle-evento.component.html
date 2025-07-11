@@ -1,0 +1,198 @@
+<div class="event-wrapper">
+  <!-- Imagen principal -->
+  <div class="header-image" [ngStyle]="{ 'background-image': 'url(' + event?.headerImage + ')' }">
+    <div class="header-overlay">
+      <h1>{{ event?.name }}</h1>
+      <p><i class="fa-regular fa-calendar"></i> {{ event?.date | date: 'fullDate' }} - {{ event?.date | date: 'h:mm a'
+        }}</p>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="event-details container">
+    <div class="card">
+      <div class="card-body">
+        <div class="event-info">
+          <img [src]="event?.thumbnailImage" class="thumbnail" alt="Evento" />
+
+          <div class="info-text">
+            <h2>{{ event?.name }}</h2>
+            <p class="event-date">
+              <i class="fa-regular fa-calendar-days"></i>
+              {{ event?.date | date: 'fullDate' }} - {{ event?.date | date: 'h:mm a' }}
+            </p>
+            <p>{{ event?.description }}</p>
+
+            <button class="btn btn-primary mt-3" (click)="comprarETicket()">
+              <i class="fa-solid fa-ticket"></i> Comprar E-ticket
+            </button>
+          </div>
+        </div>
+
+        <hr />
+
+        <div class="event-meta">
+          <div>
+            <p><strong>Lugar:</strong> {{ event?.location }}</p>
+            <p><strong>Fecha:</strong> {{ event?.date | date: 'fullDate' }}</p>
+          </div>
+          <div class="map-button">
+            <button (click)="toggleMap()" class="toggle-map-button btn btn-primary mt-3">
+              {{ showMap ? 'Ocultar mapa' : 'Ver mapa' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Contenedor del mapa -->
+<div *ngIf="showMap" class="map-container">
+  <iframe [src]="safeMapUrl" width="100%" height="450" style="border:0;" allowfullscreen loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
+
+<!-- Modal 1: Loader -->
+<div class="modal-backdrop" *ngIf="showLoader">
+  <div class="modal-content">
+    <div class="modal-center">
+      <h5>Cargando tickets disponibles...</h5>
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showLoaderParticipants">
+  <div class="modal-content">
+    <div class="modal-center">
+      <h5>Realizando el Registro...</h5>
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal 2: Selección de tickets -->
+<div class="modal-backdrop" *ngIf="showTicketModal">
+  <div class="modal-content">
+    <div class="step step-1" #step>
+      <!-- Indicador de pasos -->
+      <div class="step-indicator">
+        <div class="progress-line" [style.width]="progressWidth"></div>
+        <div class="step" [ngClass]="{ 'active': currentStep === 1 }">Tickets</div>
+        <div class="step" [ngClass]="{ 'active': currentStep === 2 }">Datos</div>
+        <div class="step" [ngClass]="{ 'active': currentStep === 3 }">Pago</div>
+      </div>
+      <h3 style="color:#ff8c00">Paso 1: Selección de Tickets</h3>
+      <div class="mb-3" *ngFor="let ticket of availableTickets">
+        <label for="ticket-{{ ticket.id }}" class="form-label">{{ ticket.name }} ({{ ticket.price |
+          currency:'COP':'symbol':'1.0-0' }})</label>
+        <div class="d-flex align-items-center">
+          <button type="button" class="btn btn-secondary" (click)="decreaseQuantity(ticket)"
+            [disabled]="ticket.quantity <= 0"
+            style="background-color: rgb(104, 0, 0); border-color:rgb(104, 0, 0) ;">-</button>
+          <input type="number" class="form-control mx-2" [value]="ticket.quantity" readonly
+            id="ticket-{{ ticket.id }}" />
+          <button type="button" class="btn btn-secondary" (click)="increaseQuantity(ticket)"
+            [disabled]="ticket.quantity >= ticket.available"
+            style="background-color: rgb(2, 99, 10); border-color: rgb(2, 99, 10);">+</button>
+        </div>
+        <small class="form-text text-muted">Disponibles: {{ ticket.available }} - Seleccionados: {{ ticket.quantity
+          }}</small>
+      </div>
+      <div *ngIf="selectedTickets.length > 0">
+        <h4>Total: <span style="color:black">{{ getTotal() | currency:'COP':'symbol':'1.0-0' }}</span></h4>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="nextStep()">Next</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 3: Formulario -->
+<div class="modal-backdrop" *ngIf="showFormModal">
+  <div class="modal-content">
+    <div class="modal-center">
+      <!-- Indicador de pasos -->
+      <div class="step-indicator">
+        <div class="progress-line" [style.width]="progressWidth"></div>
+        <div class="step" [ngClass]="{ 'active': currentStep === 1 }">Tickets</div>
+        <div class="step" [ngClass]="{ 'active': currentStep === 2 }">Datos</div>
+        <div class="step" [ngClass]="{ 'active': currentStep === 3 }">Pago</div>
+      </div>
+      <h5>Datos de los asistentes</h5>
+      <form class="ticket-form" *ngIf="ticketForms.length">
+        <h6>Asistente {{ currentFormIndex + 1 }} de {{ ticketForms.length }}</h6>
+        <p class="text-muted mb-2">Ticket: {{ currentTicketForm.ticketType }}</p>
+
+        <input type="text" placeholder="Nombre" class="form-control mb-2" [(ngModel)]="currentTicketForm.firstName"
+          name="firstName{{ currentFormIndex }}" />
+
+        <input type="text" placeholder="Apellido" class="form-control mb-2" [(ngModel)]="currentTicketForm.lastName"
+          name="lastName{{ currentFormIndex }}" />
+
+        <input type="text" placeholder="Número de documento" class="form-control mb-2"
+          [(ngModel)]="currentTicketForm.idNumber" name="idNumber{{ currentFormIndex }}" />
+
+        <input type="email" placeholder="Correo electrónico" class="form-control mb-2"
+          [(ngModel)]="currentTicketForm.email" name="email{{ currentFormIndex }}" />
+      </form>
+
+      <div class="d-flex justify-content-between mt-3">
+        <button class="btn btn-secondary" *ngIf="currentFormIndex === 0" (click)="volverASeleccion()">
+          Volver
+        </button>
+
+        <button class="btn btn-secondary" *ngIf="currentFormIndex > 0" (click)="previousForm()">
+          Anterior
+        </button>
+
+        <button class="btn btn-primary" *ngIf="!isLastForm"
+          [disabled]="!currentTicketForm.name || !currentTicketForm.email" (click)="nextForm()">
+          Siguiente
+        </button>
+
+        <button class="btn btn-success" *ngIf="isLastForm"
+          [disabled]="!currentTicketForm.name || !currentTicketForm.email" (click)="irAlPago()">
+          Ir al Pago
+        </button>
+
+      </div>
+    </div>
+  </div>
+</div>
+<div *ngIf="currentStep === 3">
+  <h5>Método de Pago</h5>
+
+  <label for="payment-method" class="form-label">Seleccione un método de pago</label>
+  <select
+    id="payment-method"
+    class="form-control mb-3"
+    [(ngModel)]="paymentMethodSelected"
+    name="paymentMethod"
+  >
+    <option value="" disabled selected>Seleccione un método de pago</option>
+    <option value="Tarjeta de Crédito">Tarjeta de Crédito</option>
+    <option value="Transferencia">Transferencia</option>
+    <option value="Efectivo">Efectivo</option>
+    <option value="Cortesía">Cortesía</option>
+  </select>
+
+  <button class="btn btn-success" [disabled]="!paymentMethodSelected" (click)="confirmarPago()">
+    Confirmar Pago
+  </button>
+</div>
+
+<!-- Modal 4: Confirmación -->
+<div class="modal-backdrop" *ngIf="showSuccessModal">
+  <div class="modal-content text-center">
+    <div class="modal-center">
+      <h4 class="text-success">¡Registro exitoso!</h4>
+      <p>Tu inscripción ha sido registrada correctamente.</p>
+      <button class="btn btn-primary" (click)="cerrarModales()">Cerrar</button>
+    </div>
+  </div>
+</div>

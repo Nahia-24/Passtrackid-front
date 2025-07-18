@@ -1,0 +1,24 @@
+/* Ocupa toda la altura de la pantalla */
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+/* Layout en columna para toda la página */
+.page-wrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* El contenido ocupa todo el espacio disponible */
+.content {
+  flex: 1;
+}
+
+/* Asegura que el footer no tenga margen extra */
+app-footerp {
+  margin: 0;
+  padding: 0;
+}

@@ -1,0 +1,262 @@
+<div class="event-wrapper">
+  <!-- Imagen principal -->
+  <div class="header-image" [ngStyle]="{ 'background-image': 'url(' + event?.headerImage + ')' }">
+    <div class="header-overlay">
+      <h1>{{ event?.name }}</h1>
+      <p><i class="fa-regular fa-calendar"></i> {{ event?.date | date: 'fullDate' }} - {{ event?.date | date: 'h:mm a'
+        }}</p>
+    </div>
+  </div>
+
+  <!-- Contenido principal -->
+  <div class="event-details container">
+    <div class="card">
+      <div class="card-body">
+        <div class="event-info">
+          <img [src]="event?.thumbnailImage" class="thumbnail" alt="Evento" />
+
+          <div class="info-text">
+            <h2>{{ event?.name }}</h2>
+            <p class="event-date">
+              <i class="fa-regular fa-calendar-days"></i>
+              {{ event?.date | date: 'fullDate' }} - {{ event?.date | date: 'h:mm a' }}
+            </p>
+
+            <button class="btn btn-primary mt-3" (click)="comprarETicket()">
+              <i class="fa-solid fa-ticket"></i> Comprar E-ticket
+            </button>
+          </div>
+          <!-- Este va al fondo -->
+          <div class="precio-wrapper">
+            <!-- Botón compartir arriba derecha -->
+            <button class="compartir btn btn-outline-success" (click)="abrirModalCompartir()">
+              <lucide-icon name="share2" class="me-2"></lucide-icon>
+              Compartir
+            </button>
+
+            <!-- Precio abajo derecha -->
+            <div class="precio-desde compact-spacing mt-4">
+              <span><i class="fa-solid fa-tag mb-2"></i></span>
+              <span>Desde</span>
+              <span class="precio-texto">
+                {{ minPrice !== null ? ('$' + (minPrice | number: '1.0-0')) : 'No disponible' }}
+              </span>
+            </div>
+          </div>
+
+        </div>
+
+        <hr />
+
+        <div class="event-meta">
+          <div>
+            <p><strong>Lugar:</strong> {{ event?.location }}</p>
+            <p><strong>Fecha:</strong> {{ event?.date | date: 'fullDate' }}</p>
+            <p>{{ event?.description }}</p>
+          </div>
+          <div class="map-button">
+            <button (click)="toggleMap()" class="toggle-map-button btn btn-primary mt-3">
+              {{ showMap ? 'Ocultar mapa' : 'Ver mapa' }}
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Contenedor del mapa -->
+<div *ngIf="showMap" class="map-container">
+  <iframe [src]="safeMapUrl" width="100%" height="450" style="border:0;" allowfullscreen loading="lazy"
+    referrerpolicy="no-referrer-when-downgrade"></iframe>
+</div>
+
+<!-- Modal 1: Loader -->
+<div class="modal-backdrop" *ngIf="showLoader">
+  <div class="modal-content">
+    <div class="modal-center">
+      <h5>Cargando tickets disponibles...</h5>
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" *ngIf="showLoaderParticipants">
+  <div class="modal-content">
+    <div class="modal-center">
+      <h5>Realizando el Registro...</h5>
+      <div class="spinner-border text-success" role="status">
+        <span class="visually-hidden">Loading...</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+<!-- Modal 2: Selección de tickets -->
+<div class="modal-backdrop" *ngIf="showTicketModal">
+  <div class="modal-content">
+    <div class="step step-1" #step>
+      <!-- Indicador de pasos -->
+      <div class="step-indicator">
+        <div class="progress-line" [style.width]="progressWidth"></div>
+        <div class="step" [ngClass]="{ 'active': currentStep === 1 }">Tickets</div>
+        <div class="step" [ngClass]="{ 'active': currentStep === 2 }">Datos</div>
+        <div class="step" [ngClass]="{ 'active': currentStep === 3 }">Pago</div>
+      </div>
+      <h3 style="color:#004db1">Paso 1: Selección de Tickets</h3>
+      <div class="mb-3" *ngFor="let ticket of availableTickets">
+        <label for="ticket-{{ ticket.id }}" class="form-label">{{ ticket.name }} ({{ ticket.price |
+          currency:'COP':'symbol':'1.0-0' }})</label>
+        <div class="d-flex align-items-center">
+          <button type="button" class="btn btn-secondary" (click)="decreaseQuantity(ticket)"
+            [disabled]="ticket.quantity <= 0"
+            style="background-color: rgb(104, 0, 0); border-color:rgb(104, 0, 0) ;">-</button>
+          <input type="number" class="form-control mx-2" [value]="ticket.quantity" readonly
+            id="ticket-{{ ticket.id }}" />
+          <button type="button" class="btn btn-secondary" (click)="increaseQuantity(ticket)"
+            [disabled]="ticket.quantity >= ticket.available"
+            style="background-color: rgb(2, 99, 10); border-color: rgb(2, 99, 10);">+</button>
+        </div>
+        <small class="form-text text-muted">Disponibles: {{ ticket.available }} - Seleccionados: {{
+          ticket.quantity}}</small>
+      </div>
+      <div *ngIf="selectedTickets.length > 0">
+        <h4>Total: <span style="color:black">{{ getTotal() | currency:'COP':'symbol':'1.0-0' }}</span></h4>
+      </div>
+      <button type="button" class="btn btn-primary" (click)="nextStep()">
+        Next
+      </button>
+      <div *ngIf="ticketError" class="alert alert-warning mt-2">
+        {{ ticketError }}
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal 3: Formulario -->
+<div class="modal-backdrop" *ngIf="showFormModal">
+  <div class="modal-content">
+    <!-- Indicador de pasos -->
+    <div class="step-indicator">
+      <div class="progress-line" [style.width]="progressWidth"></div>
+      <div class="step" [ngClass]="{ 'active': currentStep === 1 }">Tickets</div>
+      <div class="step" [ngClass]="{ 'active': currentStep === 2 }">Datos</div>
+      <div class="step" [ngClass]="{ 'active': currentStep === 3 }">Pago</div>
+    </div>
+    <h3 style="color:#004db1">Paso 2: Datos de los asisitentes</h3>
+    <form class="ticket-form" *ngIf="ticketForms.length">
+      <h6>Asistente {{ currentFormIndex + 1 }} de {{ ticketForms.length }}</h6>
+      <p class="text-muted mb-2">Ticket: {{ currentTicketForm.tipo }}</p>
+      <input type="text" placeholder="Nombre" class="form-control mb-2" [(ngModel)]="currentTicketForm.name"
+        name="name{{ currentFormIndex }}" />
+      <input type="text" placeholder="Correo electrónico" class="form-control mb-2"
+        [(ngModel)]="currentTicketForm.email" name="email{{ currentFormIndex }}" />
+    </form>
+    <div class="d-flex justify-content-between mt-3">
+      <button class="btn btn-secondary" *ngIf="currentFormIndex === 0" (click)="volverASeleccion()">
+        Volver
+      </button>
+
+      <button class="btn btn-secondary" *ngIf="currentFormIndex > 0" (click)="previousForm()">
+        Anterior
+      </button>
+
+      <button class="btn btn-primary" *ngIf="!isLastForm" [disabled]="!currentTicketForm.name || !currentTicketForm.email"
+        (click)="nextForm()">
+        Siguiente
+      </button>
+
+      <button class="btn btn-primary" *ngIf="isLastForm" [disabled]="!currentTicketForm.name || !currentTicketForm.email"
+        (click)="irAlPago()">
+        Ir al Pago
+      </button>
+
+    </div>
+  </div>
+</div>
+
+<!-- Modal 4: Confirmación -->
+<div class="modal-backdrop" *ngIf="showSuccessModal">
+  <div class="modal-content text-center">
+    <div class="modal-center">
+      <h4 class="text-success">¡Registro exitoso!</h4>
+      <p>Tu inscripción ha sido registrada correctamente.</p>
+      <button class="btn btn-primary" (click)="cerrarModales()">Cerrar</button>
+    </div>
+  </div>
+</div>
+
+<!-- Modal Compartir -->
+<div class="modal fade" id="modalCompartir" tabindex="-1" aria-labelledby="modalCompartirLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered">
+    <div class="modal-content p-3">
+      <div class="modal-header">
+        <h5 class="modal-title" id="modalCompartirLabel">Difundir</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+
+      <div class="modal-body">
+        <!-- Tabs -->
+        <ul class="nav nav-tabs mb-3 " id="tabs">
+          <li class="nav-item">
+            <a class="nav-link active text-white" style="background-color: #004db1 !important; font-weight: 500;"
+              data-bs-toggle="tab" href="#redes">Redes Sociales</a>
+          </li>
+        </ul>
+
+        <div class="tab-content">
+          <!-- Tab Redes Sociales -->
+          <div class="tab-pane fade show active" id="redes">
+            <div class="d-flex align-items-center mb-3">
+              <img [src]="event?.thumbnailImage" alt="Evento" class="me-3 rounded" width="80" height="80" />
+              <div>
+                <h5 class="mb-1">{{ event?.name }}</h5>
+                <small>{{ event?.date | date: 'fullDate' }} a las {{ event?.date | date: 'shortTime' }}</small>
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label class="form-label">Compartir</label>
+              <div class="d-flex justify-content-center flex-wrap gap-2">
+                <a [href]="'https://www.facebook.com/sharer/sharer.php?u=' + encodeUrl(eventUrl)" target="_blank"
+                  class="boton" style="background-color: #3b5998">
+                  <i class="fa-brands fa-facebook-f"></i>
+                </a>
+                <a [href]="'https://twitter.com/intent/tweet?url=' + encodeUrl(eventUrl)" target="_blank" class="boton"
+                  style="background-color: #000000">
+                  <i class="fa-brands fa-x-twitter"></i>
+                </a>
+                <a [href]="'https://www.linkedin.com/sharing/share-offsite/?url=' + encodeUrl(eventUrl)" target="_blank"
+                  class="boton" style="background-color: #0a66c2">
+                  <i class="fa-brands fa-linkedin-in"></i>
+                </a>
+                <a [href]="'https://t.me/share/url?url=' + encodeUrl(eventUrl)" target="_blank" class="boton"
+                  style="background-color: #229ED9">
+                  <i class="fa-brands fa-telegram"></i>
+                </a>
+                <a [href]="'https://api.whatsapp.com/send?text=' + encodeUrl(eventUrl)" target="_blank" class="boton"
+                  style="background-color: #25d366">
+                  <i class="fa-brands fa-whatsapp"></i>
+                </a>
+                <a [href]="'mailto:?subject=' + encodeUrl(event.name) + '&body=' + encodeUrl(eventUrl)" class="boton"
+                  style="background-color: #6c757d">
+                  <i class="fa-regular fa-envelope"></i>
+                </a>
+              </div>
+            </div>
+
+            <div class="mt-3">
+              <label class="form-label">URL</label>
+              <div class="input-group">
+                <input type="text" class="form-control" [value]="eventUrl" readonly>
+                <button class="btn btn-outline-secondary" (click)="copiarEnlace()">Copiar</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

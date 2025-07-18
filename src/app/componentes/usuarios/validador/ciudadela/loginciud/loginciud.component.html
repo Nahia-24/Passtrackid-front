@@ -1,0 +1,33 @@
+
+<app-navbarp></app-navbarp>
+
+<div class="b-example-divider"></div>
+
+
+<div class="container">
+
+    <form class="p-4 p-md-5 border rounded-3 bg-light" action="">
+        <h2>Iniciar Sesion Validador Ciudadela      </h2>
+
+        <div class="form-floating mb-3">
+            <input class="form-control" name="usuario" id="usuario" [(ngModel)]="usuario"
+                placeholder="usuario" required>
+            <label for="floatingPassword">Usuario</label>
+        </div>
+
+        <div class="form-floating mb-3">
+            <input class="form-control" name="contrasena" id="contrasena" [(ngModel)]="contrasena"
+                placeholder="contrasena" required>
+            <label for="floatingPassword">Contrasena</label>
+        </div>
+
+        <button class="w-100 btn btn-lg btn-primary" (click)="validar1()" type="submit">Validar</button>
+        <hr class="my-4">
+        <small class="text-muted">Atentos a nuestras redes sociales.</small>
+
+    </form>
+
+
+</div>
+
+<app-footerp></app-footerp>

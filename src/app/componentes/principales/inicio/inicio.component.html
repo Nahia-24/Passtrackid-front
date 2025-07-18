@@ -1,0 +1,81 @@
+<!-- <header class="header-container">
+  <video autoplay loop muted playsinline class="video-bg">
+    <source src="../../../../assets/video-header.mp4" type="video/mp4">
+    Tu navegador no soporta videos.
+  </video>
+  <div class="overlay">
+    <h1 class="display-4">Explora, Conéctate, Vive la Experiencia</h1>
+    <p class="lead">Descubre los eventos más emocionantes cerca de ti.</p>
+    <div class="input-group mb-3 w-50 mx-auto">
+      <input [(ngModel)]="terminoBusqueda" type="text" class="form-control" placeholder="Busca eventos, ciudades o categorías...">
+      <button class="btn btn-primary" (click)="buscarEventos()">Buscar</button>
+    </div>
+  </div>
+</header>
+
+<div class="container text-center mt-4">
+  <h2 class="mb-4">Eventos</h2>
+  <section class="event-grid">
+    <div class="col" *ngFor="let event of eventosFiltrados">
+      <a [routerLink]="['/evento', event.id]" class="text-decoration-none text-dark">
+        <div class="card h-100 shadow-sm">
+          <img [src]="event.image" class="card-img-top" alt="{{ event.title }}">
+          <div class="card-body d-flex flex-column">
+            <h5 class="card-title text-start">{{ event.title }}</h5>
+            <p class="card-text text-start">{{ event.description }}</p>
+          </div>
+        </div>
+      </a>
+    </div>
+  </section>
+</div>
+ -->
+<header class="header-container">
+  <video autoplay loop muted playsinline class="video-bg">
+    <source src="../../../../assets/video-header.mp4" type="video/mp4">
+    Tu navegador no soporta videos.
+  </video>
+  <div class="overlay">
+    <h1 class="display-4">Explora, Conéctate, Vive la Experiencia</h1>
+    <p class="lead">Descubre los eventos más emocionantes cerca de ti.</p>
+    <div class="input-group mb-3 w-50 mx-auto">
+      <input [(ngModel)]="terminoBusqueda" type="text" class="form-control"
+        placeholder="Busca eventos, ciudades o categorías...">
+      <button class="btn btn-primary" (click)="buscarEventos()">Buscar</button>
+    </div>
+  </div>
+</header>
+<div class="container text-center">
+
+
+  <!--   <section class="featured-events">
+    <h2>Eventos Destacados</h2>
+
+    <div class="slider">
+      <button class="slider-btn prev" (click)="prevEvent()">&#10094;</button>
+
+      <div *ngFor="let event of eventosDestacados; let i = index"
+           class="slide" [class.active]="i === currentIndex">
+        <img [src]="event.image" alt="{{ event.title }}">
+        <div class="event-info">
+          <h5>{{ event.title }}</h5>
+          <p>{{ event.description }}</p>
+        </div>
+      </div>
+
+      <button class="slider-btn next" (click)="nextEvent()">&#10095;</button>
+    </div>
+  </section> -->
+
+  <section class="event-grid">
+    <div class="card shadow-sm cursor-pointer" *ngFor="let event of eventosFiltrados"
+      [routerLink]="['/evento', event.id]">
+      <img [src]="event.image" alt=evento class="card-img-top" [alt]="event.title">
+      <div class="card-body">
+        <h5 class="card-title">{{ event.title }}</h5>
+        <p class="card-text">{{ event.description }}</p>
+      </div>
+    </div>
+  </section>
+
+</div>

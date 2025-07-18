@@ -1,0 +1,54 @@
+<!-- <app-navbarciud></app-navbarciud> -->
+
+
+
+
+<div class="b-example-divider"></div>
+
+
+
+  <div class="container">
+  <table datatable class="row-border hover"  datatable [dtOptions]="dtOptions" [dtTrigger]="dtTrigger">
+    <thead>
+      <tr>
+        <th scope="col">Nombre </th>
+        <th scope="col">Apellido </th>
+        <th scope="col">Identificacion </th>
+        <th scope="col">Celular</th>
+        <th scope="col">Correo</th>
+        <th scope="col">Codigo</th>
+        <th scope="col">Estado</th>
+
+
+
+
+
+
+      </tr>
+  </thead>
+  <tbody>
+    <tr *ngFor="let usuario of usuarioDto">
+        <td>{{usuario.variable3}}</td>
+        <td>{{usuario.variable4}}</td>
+        <td>{{usuario.variable1}}</td>
+        <td>{{usuario.variable6}}</td>
+        <td>{{usuario.variable7}}</td>
+        <td>{{usuario.variable15}}</td>
+        <td>{{usuario.variable16}}</td>
+
+
+
+
+    </tr>
+  </tbody>
+  </table>
+  </div>
+
+
+
+
+
+
+
+
+<app-footerp></app-footerp>

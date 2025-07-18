@@ -1,0 +1,172 @@
+/* ---- HEADER CON VIDEO ---- */
+.header-container {
+  position: relative;
+  width: 100%;
+  height: 400px; /* Altura fija para evitar que se alargue verticalmente */
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  color: white;
+}
+
+/* Video de fondo */
+.video-bg {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 100%;
+  height: auto; /* Mantiene la proporción */
+  min-height: 100%;
+  object-fit: cover;
+  z-index: -1;
+}
+
+/* Capa oscura para mejorar visibilidad */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.overlay h1 {
+  font-size: 3rem;
+  font-weight: bold;
+  margin-bottom: 10px;
+  animation: fadeInDown 1s ease-in-out;
+}
+
+.overlay p {
+  font-size: 1.2rem;
+  margin-bottom: 20px;
+  animation: fadeInUp 1s ease-in-out;
+}
+
+/* ---- ANIMACIONES ---- */
+@keyframes fadeInDown {
+  from {
+    opacity: 0;
+    transform: translateY(-30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ---- BARRA DE BÚSQUEDA ---- */
+.input-group {
+  max-width: 600px;
+  width: 80%;
+  margin: auto;
+}
+
+.form-control {
+  border-radius: 30px 0 0 30px;
+  border: none;
+  padding: 15px;
+}
+
+.btn-primary {
+  border-radius: 0 30px 30px 0;
+  background-color: #119100;
+  border: none;
+  transition: background 0.3s ease-in-out;
+}
+
+.btn-primary:hover {
+  background-color: #c47f01;
+}
+
+/* ---- GRID DE EVENTOS ---- */
+.event-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 30px;
+  justify-content: center;
+  padding: 40px 20px;
+  max-width: 1200px;
+  margin: 0 auto;
+  justify-items: center;
+}
+
+/* ---- ESTILO DE LAS CARDS ---- */
+.card {
+  width: 100%;
+  max-width: 300px;
+  border-radius: 15px;
+  overflow: hidden;
+  height: 100%; 
+  display: flex;
+  flex-direction: column;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+}
+
+.card img {
+  width: 100%;
+  height: 250px;
+  object-fit: cover;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* ---- AJUSTE DE ALTURA DEL CONTENIDO DE LAS CARDS ---- */
+.card-body {
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+}
+
+/* ---- FOOTER ---- */
+footer {
+  background-color: #343a40;
+  color: white;
+  padding: 20px 0;
+  border-radius: 20px 20px 0 0;
+  text-align: center;
+  margin-top: auto;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .header-container {
+    height: 300px; /* Menos alto en móviles */
+  }
+
+  .overlay h1 {
+    font-size: 2.5rem;
+  }
+
+  .overlay p {
+    font-size: 1rem;
+  }
+
+  .input-group {
+    width: 90%;
+  }
+}

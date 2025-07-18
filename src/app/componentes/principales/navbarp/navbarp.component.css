@@ -1,0 +1,106 @@
+/* ---- NAVBAR ---- */
+.navbar-container {
+  position: sticky;
+  top: 0;
+  width: 100%;
+  background: rgb(255, 255, 255); /* Transparente con negro */
+  padding: 10px 0;
+  z-index: 1000;
+  transition: all 0.3s ease-in-out;
+}
+
+/* Agregamos margen al header para evitar que el navbar lo cubra */
+.header-container {
+  margin-top: 70px; /* Ajustar según el tamaño del navbar */
+}
+
+.navbar-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: auto;
+  padding: 0 20px;
+}
+
+/* ---- LOGO ---- */
+.logo img {
+  height: 40px;
+  transition: transform 0.3s;
+}
+
+.logo img:hover {
+  transform: scale(1.1);
+}
+
+/* ---- MENÚ ---- */
+.nav-links {
+  display: flex;
+  gap: 20px;
+}
+
+.nav-item {
+  color: #004db1;
+  text-decoration: none;
+  font-size: 16px;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: bold;
+  transition: all 0.3s ease-in-out;
+}
+
+/* ---- EFECTO EN EL BOTÓN ACTIVO ---- */
+.nav-item.active {
+  color: #004db1 !important;
+  font-weight: bold;
+  border-bottom: 2px solid #004db1; /* Línea indicadora */
+}
+
+.nav-item:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* ---- BOTÓN DESTACADO ---- */
+.btn-primary {
+  background: #119100;
+  color: rgb(255, 255, 255);
+  font-weight: bold;
+}
+
+.btn-primary:hover {
+  background: #004db1;
+}
+
+/* ---- MENÚ RESPONSIVE ---- */
+.menu-toggle {
+  display: none;
+  background: none;
+  border: none;
+  color: rgb(0, 89, 255);
+  font-size: 24px;
+  cursor: pointer;
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 768px) {
+  .nav-links {
+    display: none;
+    flex-direction: column;
+    position: absolute;
+    top: 60px;
+    right: 20px;
+    background: rgba(0, 89, 255);
+    border-radius: 10px;
+    width: 200px;
+    text-align: center;
+    padding: 10px;
+  }
+
+  .nav-links.show {
+    display: flex;
+  }
+
+  .menu-toggle {
+    display: block;
+  }
+}
